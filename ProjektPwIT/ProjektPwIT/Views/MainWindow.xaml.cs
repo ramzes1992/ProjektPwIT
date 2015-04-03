@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,7 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ProjektPwIT
+namespace ProjektPwIT.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -22,7 +24,17 @@ namespace ProjektPwIT
     {
         public MainWindow()
         {
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-us");
             InitializeComponent();
+        }
+
+        bool _isRunning = false;
+
+        private void v_Button_ToggleWebCam_Click(object sender, RoutedEventArgs e)
+        {
+            _isRunning = !_isRunning;
+
+            v_Button_ToggleWebCam.Content = _isRunning ? "Stop" : "Start";
         }
     }
 }
