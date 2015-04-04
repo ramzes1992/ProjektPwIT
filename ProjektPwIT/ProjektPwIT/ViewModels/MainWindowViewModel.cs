@@ -21,14 +21,7 @@ namespace ProjektPwIT.ViewModels
         {
             get
             {
-                if (_frame != null)
-                {
-                    return _frame;
-                }
-                else
-                {
-                    return new Bitmap(640, 480);
-                }
+                return _frame;
             }
 
             set
@@ -54,7 +47,6 @@ namespace ProjektPwIT.ViewModels
 
         public MainWindowViewModel()
         {
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-us");
             InitializeServices();
             InitializeCommands();
         }

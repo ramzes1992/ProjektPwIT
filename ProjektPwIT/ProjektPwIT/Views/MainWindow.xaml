@@ -13,7 +13,15 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
-        <Image Source="{Binding Frame, Converter={StaticResource BitmapToImageSourceConverter}}" Stretch="Uniform"/>
+        <Image Name="v_Image_Frame" Source="{Binding Frame, Converter={StaticResource BitmapToImageSourceConverter}}" Stretch="Uniform"/>
+        <Viewbox>
+            <InkCanvas Name="v_InkCanvas" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                   Background="Transparent" EditingMode="None"
+                   Height="{Binding Source.Height, ElementName=v_Image_Frame}" 
+                   Width="{Binding Source.Width, ElementName=v_Image_Frame}"
+                   MouseLeftButtonUp="v_InkCanvas_MouseLeftButtonUp"/>
+        </Viewbox>
+        
         <Button Name="v_Button_ToggleWebCam" Grid.Row="1" Command="{Binding ToggleWebServiceCommand}" Click="v_Button_ToggleWebCam_Click" VerticalAlignment="Center" Content="Start!" HorizontalAlignment="Center" Margin="5"/>
     </Grid>
 </Window>
