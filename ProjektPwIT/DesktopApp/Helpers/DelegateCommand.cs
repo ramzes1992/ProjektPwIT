@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace ProjektPwIT.Helpers
+namespace DesktopApp.Helpers
 {
     public class DelegateCommand : ICommand
     {

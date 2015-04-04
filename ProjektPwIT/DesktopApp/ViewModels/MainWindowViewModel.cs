@@ -1,5 +1,5 @@
-﻿using ProjektPwIT.Helpers;
-using ProjektPwIT.Services;
+﻿using DesktopApp.Helpers;
+using DesktopApp.Services;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -10,7 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace ProjektPwIT.ViewModels
+namespace DesktopApp.ViewModels
 {
     public class MainWindowViewModel : BaseViewModel
     {

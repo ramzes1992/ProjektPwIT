@@ -10,7 +10,7 @@ using Emgu.CV.Structure;
 using Emgu.Util;
 using System.Drawing;
 
-namespace ProjektPwIT.Services
+namespace DesktopApp.Services
 {
     public class WebCamService
     {

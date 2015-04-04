@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Linq.Expressions;
 
-namespace ProjektPwIT.Helpers
+namespace DesktopApp.Helpers
 {
     public class NotificationObject : INotifyPropertyChanged
     {

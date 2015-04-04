@@ -1,6 +1,6 @@
-﻿using ProjektPwIT.Helpers;
+﻿using DesktopApp.Helpers;
 
-namespace ProjektPwIT.ViewModels
+namespace DesktopApp.ViewModels
 {
     public class BaseViewModel : NotificationObject
     {

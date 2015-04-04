@@ -29,6 +29,7 @@ ipch/
 [Bb]in
 [Dd]ebug*/
 [Rr]elease*/
+[Ll]ib*/
 Ankh.NoLoad
 
 #MonoDevelop
@@ -66,5 +67,5 @@ packages/
 
 #Test files
 *.testsettings
-/ProjektPwIT/ProjektPwIT/lib.zip
-/ProjektPwIT/ProjektPwIT/lib
+/ProjektPwIT/DesktopApp/lib.zip
+/ProjektPwIT/DesktopApp/lib
