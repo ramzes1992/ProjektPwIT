@@ -33,6 +33,12 @@
         <StackPanel Grid.Column="1">
             <Button Name="v_Button_Clear" Content="Clear" Click="v_Button_Clear_Click" />
             <xctk:ColorPicker Name="v_ColorPicker" SelectedColorChanged="v_ColorPicker_SelectedColorChanged" />
+            <StackPanel Orientation="Horizontal">
+                <Button Name="v_Button_Plus" Click="v_Button_Plus_Click"
+                        Content="+"/>
+                <Button Name="v_Button_Minus" Click="v_Button_Minus_Click"
+                        Content="-"/>
+            </StackPanel>
         </StackPanel>
         
         <Button Name="v_Button_ToggleWebCam" Grid.Row="1" Command="{Binding ToggleWebServiceCommand}" Click="v_Button_ToggleWebCam_Click" VerticalAlignment="Center" Content="Start!" HorizontalAlignment="Center" Margin="5"/>

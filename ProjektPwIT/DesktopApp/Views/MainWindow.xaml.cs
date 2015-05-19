@@ -78,5 +78,17 @@ namespace DesktopApp.Views
         {
             v_InkCanvas.DefaultDrawingAttributes.Color = v_ColorPicker.SelectedColor;
         }
+
+        private void v_Button_Plus_Click(object sender, RoutedEventArgs e)
+        {
+            v_InkCanvas.DefaultDrawingAttributes.Height++;
+            v_InkCanvas.DefaultDrawingAttributes.Width++;
+        }
+
+        private void v_Button_Minus_Click(object sender, RoutedEventArgs e)
+        {
+            v_InkCanvas.DefaultDrawingAttributes.Height--;
+            v_InkCanvas.DefaultDrawingAttributes.Width--;
+        }
     }
 }
