@@ -68,5 +68,15 @@ namespace DesktopApp.Views
                 encoder.Save(outStream);
             }
         }
+
+        private void v_Button_Clear_Click(object sender, RoutedEventArgs e)
+        {
+            v_InkCanvas.Strokes.Clear();
+        }
+
+        private void v_ColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color> e)
+        {
+            v_InkCanvas.DefaultDrawingAttributes.Color = v_ColorPicker.SelectedColor;
+        }
     }
 }

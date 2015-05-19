@@ -3,16 +3,24 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:viewModels="clr-namespace:DesktopApp.ViewModels"
         xmlns:converters="clr-namespace:DesktopApp.Converters"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="MainWindow" Height="350" Width="525">
     <Window.Resources>
         <viewModels:MainWindowViewModel x:Key="MainWindowViewModel" />
         <converters:BitmapToImageSourceConverter x:Key="BitmapToImageSourceConverter"/>
     </Window.Resources>
-    <Grid DataContext="{StaticResource MainWindowViewModel}">
+    <Window.DataContext>
+        <viewModels:MainWindowViewModel />
+    </Window.DataContext>
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
         <Image Name="v_Image_Frame" Source="{Binding Frame, Converter={StaticResource BitmapToImageSourceConverter}}" Stretch="Uniform"/>
         <Viewbox>
             <InkCanvas Name="v_InkCanvas" HorizontalAlignment="Center" VerticalAlignment="Center" 
@@ -21,6 +29,11 @@
                    Width="{Binding Source.Width, ElementName=v_Image_Frame}"
                    MouseLeftButtonUp="v_InkCanvas_MouseLeftButtonUp"/>
         </Viewbox>
+        
+        <StackPanel Grid.Column="1">
+            <Button Name="v_Button_Clear" Content="Clear" Click="v_Button_Clear_Click" />
+            <xctk:ColorPicker Name="v_ColorPicker" SelectedColorChanged="v_ColorPicker_SelectedColorChanged" />
+        </StackPanel>
         
         <Button Name="v_Button_ToggleWebCam" Grid.Row="1" Command="{Binding ToggleWebServiceCommand}" Click="v_Button_ToggleWebCam_Click" VerticalAlignment="Center" Content="Start!" HorizontalAlignment="Center" Margin="5"/>
     </Grid>
