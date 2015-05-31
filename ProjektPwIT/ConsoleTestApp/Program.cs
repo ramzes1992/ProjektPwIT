@@ -47,29 +47,10 @@ namespace ConsoleTestApp
             //    listener.Close();
             //}
                 IPAddress ipAd = IPAddress.Parse("192.168.0.103");
-                // use local m/c IP address, and 
-                // use the same in the client
-
-                // Initializes the Listener /
                 TcpListener myList = new TcpListener(ipAd, 6666);
-
-                // Start Listeneting at the specified port /
                 myList.Start();
 
-                Console.WriteLine("The server is running at port 6666...");
-                Console.WriteLine("The local End point is  :" +
-                                  myList.LocalEndpoint);
-                Console.WriteLine("Waiting for a connection.....");
-
                 Socket s = myList.AcceptSocket();
-                Console.WriteLine("Connection accepted from " + s.RemoteEndPoint);
-
-                byte[] mdat = { Convert.ToByte('m'), 
-                                Convert.ToByte('d'), 
-                                Convert.ToByte('a'), 
-                                Convert.ToByte('t') };
-
-                int headers = 10;
 
                 var picture = new List<byte[]>();
                 int size = 0;
@@ -78,17 +59,6 @@ namespace ConsoleTestApp
                     byte[] b = new byte[1024];
                     int k = s.Receive(b);
                     size += k;
-                    //if (headers > 0)
-                    //{
-                    //    Console.WriteLine("\n======HEADER========\n");
-                    //    Console.WriteLine(System.Text.Encoding.UTF8.GetString(b));
-                    //    headers--;
-                    //    continue;
-                    //}
-                    //else
-                    //{
-                    //    break;
-                    //}
 
                     if (k <= 0) 
                     {
@@ -97,13 +67,6 @@ namespace ConsoleTestApp
                     picture.Add(b);
 
                     Thread.Sleep(2);
-
-                    //stopWatch.Start();
-                    //Console.WriteLine("\n======Recieved========\n" + k.ToString() + "\n");
-                    //Console.WriteLine(System.Text.Encoding.UTF8.GetString(b));
-                    //stopWatch.Stop();
-                    //Console.WriteLine("Miliseconds: {0}\n", stopWatch.ElapsedMilliseconds);
-                    //stopWatch.Reset();
                 }
 
                 s.Close();
