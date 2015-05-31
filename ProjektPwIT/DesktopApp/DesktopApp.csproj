@@ -92,6 +92,7 @@
     <Compile Include="Converters\BitmapToImageSourceConverter.cs" />
     <Compile Include="Helpers\DelegateCommand.cs" />
     <Compile Include="Helpers\NotificationObject.cs" />
+    <Compile Include="Services\TCPListenerService.cs" />
     <Compile Include="Services\WebCamService.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />

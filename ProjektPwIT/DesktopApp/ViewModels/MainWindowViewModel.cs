@@ -15,6 +15,7 @@ namespace DesktopApp.ViewModels
     public class MainWindowViewModel : BaseViewModel
     {
         private WebCamService _webCamService;
+        private TCPListenerService _TCPListenerService;
 
         private Bitmap _frame;
         public Bitmap Frame
@@ -55,6 +56,9 @@ namespace DesktopApp.ViewModels
         {
             _webCamService = new WebCamService();
             _webCamService.ImageChanged += _webCamService_ImageChanged;
+
+            _TCPListenerService = new TCPListenerService("192.168.0.103", 6666);
+            _TCPListenerService.ImageChanged += _webCamService_ImageChanged;
         }
 
         private void InitializeCommands()
@@ -69,13 +73,22 @@ namespace DesktopApp.ViewModels
 
         private void ToggleWebServiceExecute()
         {
-            if (!_webCamService.IsRunning)
+            //if (!_webCamService.IsRunning)
+            //{
+            //    _webCamService.RunServiceAsync();
+            //}
+            //else
+            //{
+            //    _webCamService.CancelServiceAsync();
+            //}
+
+            if (!_TCPListenerService.IsRunning)
             {
-                _webCamService.RunServiceAsync();
+                _TCPListenerService.RunServiceAsync();
             }
             else
             {
-                _webCamService.CancelServiceAsync();
+                _TCPListenerService.CancelServiceAsync();
             }
         }
     }
