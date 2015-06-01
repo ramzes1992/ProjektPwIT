@@ -20,78 +20,78 @@ namespace ConsoleTestApp
 
         static void Main(string[] args)
         {
-            //bool done = false;
+            IPAddress ipAd = IPAddress.Parse("192.168.0.103");
+            TcpListener myList = new TcpListener(ipAd, 6666);
+            myList.Start();
 
-            //UdpClient listener = new UdpClient(6500);
-            //IPEndPoint groupEP = new IPEndPoint(IPAddress.Any, 6500);
+            Socket s = myList.AcceptSocket();
+            var picture = new List<byte[]>();
+            int size = 0;
+            int counter = 0;
+            while (true)
+            {
+                byte[] b = new byte[1024];
+                int k = s.Receive(b);
+                size += k;
 
-            //try
-            //{
-            //    while (!done)
-            //    {
-            //        Console.WriteLine("Waiting for broadcast");
-            //        byte[] bytes = listener.Receive(ref groupEP);
-
-            //        Console.WriteLine("Received broadcast from {0} :\n {1}\n",
-            //            groupEP.ToString(),
-            //            Encoding.ASCII.GetString(bytes, 0, bytes.Length));
-            //    }
-
-            //}
-            //catch (Exception e)
-            //{
-            //    Console.WriteLine(e.ToString());
-            //}
-            //finally
-            //{
-            //    listener.Close();
-            //}
-                IPAddress ipAd = IPAddress.Parse("192.168.0.103");
-                TcpListener myList = new TcpListener(ipAd, 6666);
-                myList.Start();
-
-                Socket s = myList.AcceptSocket();
-
-                var picture = new List<byte[]>();
-                int size = 0;
-                while (true)
+                if (k <= 0 && size > 0)
                 {
-                    byte[] b = new byte[1024];
-                    int k = s.Receive(b);
-                    size += k;
+                    s = myList.AcceptSocket();
 
-                    if (k <= 0) 
+                    byte[] result = ConcatByteArrays(picture, size, 1024);
+                    try
                     {
-                        break; 
+                        var bmp = byteArrayToImage(result);
+                        bmp.Save("somefile" + counter.ToString() + ".bmp");
+                        Console.WriteLine("Saved file: {0}", "somefile" + counter.ToString() + ".bmp");
+                        counter++;
                     }
+                    catch (Exception ex)
+                    {
+                        //continue;
+                        Console.WriteLine(ex.Message);
+                    }
+
+                    size = 0;
+                    picture.Clear();
+                }
+                else
+                {
                     picture.Add(b);
-
-                    Thread.Sleep(2);
                 }
 
-                s.Close();
-                myList.Stop();
+                Thread.Sleep(2);
+            }
 
-                byte[] result = new byte[size];
-                
-                for (int i = 0; i < picture.Count; i++)
-                {
-                    for (int j = 0; j < 1024; j++)
-                    {
-                        if ((i * 1024) + j < size)
-                        {
-                            result[(i * 1024) + j] = picture[i][j];
-                        }
-                    }
-                }
+            //s.Close();
+            //myList.Stop();
 
-                var bmp = byteArrayToImage(result);
-                bmp.Save("somefile.bmp");
-                Console.WriteLine(picture.Sum(t => t.Count()));
+            //byte[] result = ConcatByteArrays(picture, size, 1024);
 
-            
+            //var bmp = byteArrayToImage(result);
+            //bmp.Save("somefile.bmp");
+            Console.WriteLine(picture.Sum(t => t.Count()));
+
+
 
             Console.ReadKey();
+        }
+
+        private static byte[] ConcatByteArrays(List<byte[]> picture, int size, int bufferSize)
+        {
+            byte[] result = new byte[size];
+
+            for (int i = 0; i < picture.Count; i++)
+            {
+                for (int j = 0; j < bufferSize; j++)
+                {
+                    if ((i * bufferSize) + j < size)
+                    {
+                        result[(i * bufferSize) + j] = picture[i][j];
+                    }
+                }
+            }
+            return result;
         }
 
         public static Bitmap byteArrayToImage(byte[] byteArrayIn)

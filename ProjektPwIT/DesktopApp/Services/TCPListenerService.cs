@@ -57,44 +57,65 @@ namespace DesktopApp.Services
             Socket s = myList.AcceptSocket();
             var picture = new List<byte[]>();
             int size = 0;
-            while (true)
+            while (!_worker.CancellationPending)
             {
                 byte[] b = new byte[1024];
                 int k = s.Receive(b);
                 size += k;
 
-                if (k <= 0)
+                if (k <= 0 && size > 0)
                 {
-                    break;
+                    s = myList.AcceptSocket();
+
+                    byte[] result = ConcatByteArrays(picture, size, 1024);
+                    try
+                    {
+                        //var bmp = ByteArrayToImage(result);
+                        RaiseImageChangedEvent(ByteArrayToImage(result));
+                    }
+                    catch (Exception ex)
+                    {
+                        //continue;
+                        Console.WriteLine(ex.Message);
+                    }
+
+                    size = 0;
+                    picture.Clear();
                 }
-                picture.Add(b);
+                else
+                {
+                    picture.Add(b);
+                }
 
                 Thread.Sleep(2);
             }
+
             s.Close();
             myList.Stop();
-
-            byte[] result = new byte[size];
-
-            for (int i = 0; i < picture.Count; i++)
-            {
-                for (int j = 0; j < 1024; j++)
-                {
-                    if ((i * 1024) + j < size)
-                    {
-                        result[(i * 1024) + j] = picture[i][j];
-                    }
-                }
-            }
-
-            RaiseImageChangedEvent(ByteArrayToImage(result));
         }
 
-        private static Bitmap ByteArrayToImage(byte[] byteArrayIn)
+        private Bitmap ByteArrayToImage(byte[] byteArrayIn)
         {
             MemoryStream ms = new MemoryStream(byteArrayIn);
             Image returnImage = Image.FromStream(ms);
             return new Bitmap(returnImage);
+        }
+
+        private byte[] ConcatByteArrays(List<byte[]> picture, int size, int bufferSize)
+        {
+            byte[] result = new byte[size];
+
+            for (int i = 0; i < picture.Count; i++)
+            {
+                for (int j = 0; j < bufferSize; j++)
+                {
+                    if ((i * bufferSize) + j < size)
+                    {
+                        result[(i * bufferSize) + j] = picture[i][j];
+                    }
+                }
+            }
+            return result;
         }
 
         public void RunServiceAsync()
