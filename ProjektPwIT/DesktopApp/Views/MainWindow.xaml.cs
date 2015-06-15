@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DesktopApp.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -42,7 +43,7 @@ namespace DesktopApp.Views
         {
             if (_isRunning)
             {
-                ExportToPng("test.bmp", v_InkCanvas);
+                ExportToPng("test.png", v_InkCanvas);
             }
         }
 
@@ -61,17 +62,22 @@ namespace DesktopApp.Views
                 PixelFormats.Pbgra32);
             renderBitmap.Render(surface);
 
-            using (FileStream outStream = new FileStream(path, FileMode.Create))
+            using (MemoryStream outStream = new MemoryStream())
             {
                 PngBitmapEncoder encoder = new PngBitmapEncoder();
                 encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
                 encoder.Save(outStream);
+                DrawingHelper.SetData(outStream.ToArray());
             }
         }
 
         private void v_Button_Clear_Click(object sender, RoutedEventArgs e)
         {
             v_InkCanvas.Strokes.Clear();
+            if (_isRunning)
+            {
+                ExportToPng("test.png", v_InkCanvas);
+            }
         }
 
         private void v_ColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color> e)

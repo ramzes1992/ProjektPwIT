@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DesktopApp.Helpers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -30,7 +31,7 @@ namespace DesktopApp.Services
         }
 
         public event ImageChangedEventHndler ImageChanged;
-        public delegate void ImageChangedEventHndler(object sender, Bitmap image);
+        public delegate void ImageChangedEventHndler(object sender, byte[] image);
 
         public TCPListenerService(string ipAddress, int port)
         {
@@ -43,55 +44,69 @@ namespace DesktopApp.Services
 
         void _worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            
+
         }
 
         void _worker_DoWork(object sender, DoWorkEventArgs e)
         {
             IPAddress ipAd = IPAddress.Parse(_ipAddress);
-            TcpListener myList = new TcpListener(ipAd, _port);
+            TcpListener myListener = new TcpListener(ipAd, _port);
 
-            // Start Listeneting at the specified port /
-            myList.Start();
-
-            Socket s = myList.AcceptSocket();
-            var picture = new List<byte[]>();
-            int size = 0;
+            myListener.Start();
             while (!_worker.CancellationPending)
             {
-                byte[] b = new byte[1024];
-                int k = s.Receive(b);
-                size += k;
+                Socket s = myListener.AcceptSocket();
+                
+                byte[] buff = new byte[1024];
+                long frameSize = 0;
+                int lenght = s.Receive(buff, SocketFlags.None);
+                byte[] famreSizeBuff = buff.Take(lenght).ToArray();
 
-                if (k <= 0 && size > 0)
+                Array.Reverse(famreSizeBuff);
+
+                frameSize = BitConverter.ToInt32(famreSizeBuff, 0);
+                string resp = frameSize.ToString();
+
+                s.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.NoDelay, true);
+                s.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.NoDelay, true);
+                s.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.NoDelay, true);
+                s.NoDelay = true;
+                byte[] sendBuffer = System.Text.Encoding.ASCII.GetBytes(resp);
+                s.SendBufferSize = sendBuffer.Length;
+                s.Send(sendBuffer);
+
+                byte[] frameReceived = new byte[frameSize];
+
+                int i = 0;
+                while (i < frameSize)
                 {
-                    s = myList.AcceptSocket();
-
-                    byte[] result = ConcatByteArrays(picture, size, 1024);
-                    try
+                    byte[] tmpBuffer = new byte[1024];
+                    int receivedBytes = s.Receive(tmpBuffer);
+                    for (int j = 0; j < receivedBytes; j++)
                     {
-                        //var bmp = ByteArrayToImage(result);
-                        RaiseImageChangedEvent(ByteArrayToImage(result));
+                        frameReceived[i] = tmpBuffer[j];
+                        i++;
                     }
-                    catch (Exception ex)
-                    {
-                        //continue;
-                        Console.WriteLine(ex.Message);
-                    }
-
-                    size = 0;
-                    picture.Clear();
                 }
-                else
+
+                    
+                RaiseImageChangedEvent(frameReceived);
+
+                using(Image testImg = Image.FromStream(new MemoryStream(DrawingHelper.GetData())))
                 {
-                    picture.Add(b);
+                    MemoryStream ms = new MemoryStream();
+                    testImg.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                    byte[] imageEncoded = ms.ToArray();
+
+                    s.Send(System.Text.Encoding.ASCII.GetBytes(imageEncoded.Length.ToString()));
+                    s.Send(imageEncoded);
                 }
 
-                Thread.Sleep(2);
+                s.Close();
             }
+            myListener.Stop();
 
-            s.Close();
-            myList.Stop();
+
         }
 
         private Bitmap ByteArrayToImage(byte[] byteArrayIn)
@@ -130,7 +145,7 @@ namespace DesktopApp.Services
             _isRunning = false;
         }
 
-        private void RaiseImageChangedEvent(Bitmap image)
+        private void RaiseImageChangedEvent(byte[] image)
         {
             if (ImageChanged != null)
             {

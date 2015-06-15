@@ -91,6 +91,7 @@
     </Compile>
     <Compile Include="Converters\BitmapToImageSourceConverter.cs" />
     <Compile Include="Helpers\DelegateCommand.cs" />
+    <Compile Include="Helpers\DrawingHelper.cs" />
     <Compile Include="Helpers\NotificationObject.cs" />
     <Compile Include="Services\TCPListenerService.cs" />
     <Compile Include="Services\WebCamService.cs" />

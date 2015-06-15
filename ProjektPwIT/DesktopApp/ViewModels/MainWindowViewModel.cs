@@ -9,16 +9,19 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 
 namespace DesktopApp.ViewModels
 {
     public class MainWindowViewModel : BaseViewModel
     {
+        private const string ipAdress = "192.168.0.100";
+
         private WebCamService _webCamService;
         private TCPListenerService _TCPListenerService;
 
-        private Bitmap _frame;
-        public Bitmap Frame
+        private byte[] _frame;
+        public byte[] Frame
         {
             get
             {
@@ -54,10 +57,10 @@ namespace DesktopApp.ViewModels
 
         private void InitializeServices()
         {
-            _webCamService = new WebCamService();
-            _webCamService.ImageChanged += _webCamService_ImageChanged;
+            //_webCamService = new WebCamService();
+            //_webCamService.ImageChanged += _webCamService_ImageChanged;
 
-            _TCPListenerService = new TCPListenerService("192.168.0.103", 6666);
+            _TCPListenerService = new TCPListenerService(ipAdress, 6666);
             _TCPListenerService.ImageChanged += _webCamService_ImageChanged;
         }
 
@@ -66,7 +69,7 @@ namespace DesktopApp.ViewModels
             _toggleWebServiceCommand = new DelegateCommand(ToggleWebServiceExecute);
         }
 
-        private void _webCamService_ImageChanged(object sender, System.Drawing.Bitmap image)
+        private void _webCamService_ImageChanged(object sender, byte[] image)
         {
             this.Frame = image;
         }
