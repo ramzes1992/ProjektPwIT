@@ -68,6 +68,7 @@ namespace DesktopApp.Views
                 encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
                 encoder.Save(outStream);
                 DrawingHelper.SetData(outStream.ToArray());
+                DrawingHelper.IsChanged = true;
             }
         }
 

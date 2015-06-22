@@ -12,6 +12,26 @@ namespace DesktopApp.Helpers
         private static byte[] _data = File.ReadAllBytes("test.png");
         private static object _sync = new object();
 
+        private static bool _isChanged = false;
+        public static bool IsChanged
+        {
+            get 
+            {
+                lock (_sync)
+                {
+                    return _isChanged;
+                }
+            }
+
+            set 
+            {
+                lock (_sync)
+                {
+                    _isChanged = value;
+                }
+            }
+        }
+
         public static void SetData(byte[] data)
         {
             lock(_sync){

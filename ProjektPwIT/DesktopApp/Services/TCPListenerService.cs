@@ -56,7 +56,7 @@ namespace DesktopApp.Services
             while (!_worker.CancellationPending)
             {
                 Socket s = myListener.AcceptSocket();
-                
+
                 byte[] buff = new byte[1024];
                 long frameSize = 0;
                 int lenght = s.Receive(buff, SocketFlags.None);
@@ -89,17 +89,26 @@ namespace DesktopApp.Services
                     }
                 }
 
-                    
+
                 RaiseImageChangedEvent(frameReceived);
 
-                using(Image testImg = Image.FromStream(new MemoryStream(DrawingHelper.GetData())))
+
+                using (Image testImg = Image.FromStream(new MemoryStream(DrawingHelper.GetData())))
                 {
                     MemoryStream ms = new MemoryStream();
                     testImg.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
                     byte[] imageEncoded = ms.ToArray();
 
-                    s.Send(System.Text.Encoding.ASCII.GetBytes(imageEncoded.Length.ToString()));
-                    s.Send(imageEncoded);
+                    if (DrawingHelper.IsChanged)
+                    {
+                        s.Send(System.Text.Encoding.ASCII.GetBytes(imageEncoded.Length.ToString()));
+                        s.Send(imageEncoded);
+                        DrawingHelper.IsChanged = false;
+                    }
+                    else
+                    {
+                        s.Send(System.Text.Encoding.ASCII.GetBytes(0.ToString()));
+                    }
                 }
 
                 s.Close();

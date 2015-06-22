@@ -15,7 +15,7 @@ namespace DesktopApp.ViewModels
 {
     public class MainWindowViewModel : BaseViewModel
     {
-        private const string ipAdress = "192.168.0.100";
+        private const string ipAdress = "192.168.43.60";
 
         private WebCamService _webCamService;
         private TCPListenerService _TCPListenerService;
